@@ -21,11 +21,8 @@ public class Login_Activity extends AppCompatActivity {
     Button btnSetup,btnLogin;
     EditText useremail,userpw;
     public static final String DEFAULT="N/A";
+    SharedPreferences preferences;
 
-  /*  public void doLogin(View view){
-        intent=new Intent(this,Splash_Activity.class);
-        startActivity(intent);
-    }*/
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,22 +33,23 @@ public class Login_Activity extends AppCompatActivity {
         useremail=(EditText) findViewById(R.id.input_email);
         userpw=(EditText) findViewById(R.id.input_password);
 
+
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                SharedPreferences preferences=getSharedPreferences("MyData",Context.MODE_PRIVATE);
-                String email=preferences.getString("MailId",DEFAULT);
-                String password=preferences.getString("password",DEFAULT);
-                if(email==DEFAULT || password==DEFAULT){
-                    Toast.makeText(getApplicationContext(),"No Data Found",Toast.LENGTH_LONG).show();
-                }
-                else {
-                    useremail.setText(email);
-                    userpw.setText(password);
-                    intent=new Intent(context,Splash_Activity.class);
+                preferences=getSharedPreferences("MyData",0);
+
+                final String email=preferences.getString("MailId",null);
+                final String pass=preferences.getString("Password",null);
+
+                if(useremail.equals(email) && userpw.equals(pass)){
+                    Intent intent=new Intent(getBaseContext(),Splash_Activity.class);
                     startActivity(intent);
                 }
+                else
+                    Toast.makeText(getBaseContext(),"No data found",Toast.LENGTH_LONG).show();
 
 
             }

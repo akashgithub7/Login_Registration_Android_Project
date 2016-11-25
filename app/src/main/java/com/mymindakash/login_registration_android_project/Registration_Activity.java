@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,48 +33,50 @@ public class Registration_Activity extends AppCompatActivity {
 
     public void doValidation(View view){
         String UserName=etUserName.getText().toString();
-        password=etPassward.getText().toString();
+        String password=etPassward.getText().toString();
+        String emailid=etMailId.getText().toString();
         confirmPassword =etConfirmPassward.getText().toString();
 
-       try{
-           if(UserName.length()==0) {
-               Toast.makeText(getApplicationContext(), "Enter name please", Toast.LENGTH_SHORT).show();
-           }
-           else if(radioGroup.getCheckedRadioButtonId()==-1){
-               Toast.makeText(getApplicationContext(), "Select Gender", Toast.LENGTH_SHORT).show();
-           }
-           else if(etMailId.length()==0 || etMailId.toString().matches(emailPattern)){
-               Toast.makeText(getApplicationContext(), "Enter a valid Mail Id", Toast.LENGTH_SHORT).show();
-           }
-           else if (!password.equals(confirmPassword)){
-               Toast.makeText(getApplicationContext(), "Password and Confirm password did not matched", Toast.LENGTH_SHORT).show();
-           }
-           else if(etMobileNo.length()!=10){
+        SharedPreferences preferences=getSharedPreferences("MyData",0);
+        SharedPreferences.Editor editor=preferences.edit();
+
+        try{
+            if(UserName.length()==0) {
+                Toast.makeText(getApplicationContext(), "Enter name please", Toast.LENGTH_SHORT).show();
+            }
+            else if(radioGroup.getCheckedRadioButtonId()==-1){
+                Toast.makeText(getApplicationContext(), "Select Gender", Toast.LENGTH_SHORT).show();
+            }
+            else if(etMailId.length()==0 || etMailId.toString().matches(emailPattern)){
+                Toast.makeText(getApplicationContext(), "Enter a valid Mail Id", Toast.LENGTH_SHORT).show();
+            }
+            else if (!password.equals(confirmPassword)){
+                Toast.makeText(getApplicationContext(), "Password and Confirm password did not matched", Toast.LENGTH_SHORT).show();
+            }
+            else if(etMobileNo.length()!=10){
                 Toast.makeText(getApplicationContext(),"Enter a valid Mobile number",Toast.LENGTH_LONG).show();
-           }
-           else if ((UserName.length()>0) && isValidEmail()==true && isValidMobileNo()==true){
-              // sendEmail();
-               Toast.makeText(getApplicationContext(),"All data is valid ..Wait for a moment..",Toast.LENGTH_LONG).show();
+            }
+            else if ((UserName.length()>0) && isValidEmail()==true && isValidMobileNo()==true){
+                // sendEmail();
+                Toast.makeText(getApplicationContext(),"All data is valid ..Wait for a moment..",Toast.LENGTH_LONG).show();
 
-               SharedPreferences preferences=getSharedPreferences("MyData",Context.MODE_PRIVATE);
-               SharedPreferences.Editor editor=preferences.edit();
-               editor.putString("UserName",etUserName.getText().toString());
-               editor.putString("Password",password);
-               editor.putString("DOB",etDate.getText().toString());
-               editor.putString("MailId",etMailId.getText().toString());
-               editor.putString("Gender",radioGroup.toString());
 
-               editor.commit();
-               Toast.makeText(getApplicationContext(),"Data Saved Successfully",Toast.LENGTH_LONG).show();
+                editor.putString("Password",password);
+                editor.putString("MailId",emailid);
+                Log.i("myapp","Data Saved");
 
-               intent=new Intent(this,Login_Activity.class);
-               startActivity(intent);
-           }
 
-       }catch (Exception e){
-           Toast.makeText(getApplicationContext(), "All feilds are mandatory", Toast.LENGTH_SHORT).show();
+                editor.commit();
+                Toast.makeText(getApplicationContext(),"Data Saved Successfully",Toast.LENGTH_LONG).show();
 
-       }
+                intent=new Intent(Registration_Activity.this,Login_Activity.class);
+                startActivity(intent);
+            }
+
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(), "All feilds are mandatory", Toast.LENGTH_SHORT).show();
+
+        }
 
 
     }
@@ -86,7 +89,7 @@ public class Registration_Activity extends AppCompatActivity {
         if (bs == false) {
             Toast.makeText(getApplicationContext(),"Email id is incorrect",Toast.LENGTH_LONG).show();
         }
-    return true;
+        return true;
     }
 
 
@@ -96,7 +99,7 @@ public class Registration_Activity extends AppCompatActivity {
         {
             Toast.makeText(getApplicationContext(),"Mobile Number is incorrect",Toast.LENGTH_LONG).show();
         }
-    return true;
+        return true;
     }
 
     public void sendEmail() {
@@ -125,7 +128,4 @@ public class Registration_Activity extends AppCompatActivity {
         etDate=(EditText)findViewById(R.id.etDate);
 
     }
-
-
-
 }
